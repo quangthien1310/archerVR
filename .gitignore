@@ -1,0 +1,38 @@
+# Thư mục Library, Logs, Temp chứa file tạm và cache
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+UserSettings/
+
+# Không push thư mục Packages ngoại trừ manifest.json
+Packages/* 
+!Packages/manifest.json
+
+# Không push file cấu hình cá nhân của người dùng
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.opendb
+*.VC.db
+
+# Ignore Thư mục Unity Cache và Cache của Rider
+.vscode/
+.idea/
+.vs/
+*.apk
+*.aab
+*.unitypackage
+
+# Ignore file Lightmapping
+LightingData.asset
