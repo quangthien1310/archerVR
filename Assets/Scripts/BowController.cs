@@ -13,7 +13,7 @@ public class BowController : MonoBehaviour
     public float shootForce = 30f;          // Lực bắn tối đa
     public float pullTime = 2f;             // Thời gian kéo cung để đạt lực tối đa
     public float minShootForce = 10f;       // Lực bắn tối thiểu
-    public Vector3 rotationOffset = new Vector3(0f, 0f, 0f); // Offset xoay nếu model mũi tên bị lệch
+    public Vector3 rotationOffset = new Vector3(-90f, 0f, 0f); // Offset xoay nếu model mũi tên bị lệch
 
     private GameObject currentArrow;        // Mũi tên hiện tại đang được giữ
     private Vector3 targetPoint;            // Điểm va chạm raycast từ camera
@@ -29,7 +29,7 @@ public class BowController : MonoBehaviour
 
     void Update()
     {
-        UpdateRaycast();
+        // UpdateRaycast();
 
         if (Input.GetMouseButton(0) && currentArrow != null)
         {
@@ -49,31 +49,31 @@ public class BowController : MonoBehaviour
         }
     }
 
-    void UpdateRaycast()
-    {
-        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-        RaycastHit hit;
+    // void UpdateRaycast()
+    // {
+    //     Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+    //     RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 100f, aimLayerMask))
-        {
-            targetPoint = hit.point;
-            Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.green);
-        }
-        else
-        {
-            targetPoint = ray.origin + ray.direction * 100f;
-            Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red);
-        }
+    //     if (Physics.Raycast(ray, out hit, 100f, aimLayerMask))
+    //     {
+    //         targetPoint = hit.point;
+    //         Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.green);
+    //     }
+    //     else
+    //     {
+    //         targetPoint = ray.origin + ray.direction * 100f;
+    //         Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red);
+    //     }
 
-        predictedShootDirection = (targetPoint - shootPoint.position).normalized;
+    //     predictedShootDirection = (targetPoint - shootPoint.position).normalized;
 
-        // Ray từ vị trí bắn đến target
-        Debug.DrawRay(shootPoint.position, predictedShootDirection * 100f, Color.blue);
-    }
+    //     // Ray từ vị trí bắn đến target
+    //     Debug.DrawRay(shootPoint.position, predictedShootDirection * 100f, Color.blue);
+    // }
 
     void SpawnArrow()
     {
-        Quaternion arrowRotation = Quaternion.LookRotation(arrowHoldPoint.forward) * Quaternion.Euler(rotationOffset) * Quaternion.Euler(-90, 0, 0);
+        Quaternion arrowRotation = Quaternion.LookRotation(arrowHoldPoint.forward) * Quaternion.Euler(rotationOffset);
         currentArrow = Instantiate(arrowPrefab, arrowHoldPoint.position, arrowRotation, arrowHoldPoint);
 
         Rigidbody rb = currentArrow.GetComponent<Rigidbody>();
