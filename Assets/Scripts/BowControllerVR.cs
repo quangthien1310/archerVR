@@ -13,7 +13,7 @@ public class BowControllerVR : MonoBehaviour
     [Header("Bow Shooting Settings")]
     public float shootForce = 30f;
     public float minShootForce = 10f;
-    public float maxPullDistance = 0.5f; // Giới hạn khoảng cách kéo tối đa
+    public float maxPullDistance = 0.7f; // Giới hạn khoảng cách kéo tối đa
     public Vector3 rotationOffset = new Vector3(-90f, 0f, 0f);
 
     private GameObject currentArrow;
@@ -26,6 +26,7 @@ public class BowControllerVR : MonoBehaviour
 
     [SerializeField] private SteamVR_Behaviour_Pose poseLeft;
     [SerializeField] private SteamVR_Behaviour_Pose poseRight;
+    private float pullDistance = 0f;
 
     void Start()
     {
@@ -36,11 +37,18 @@ public class BowControllerVR : MonoBehaviour
     {
         if (grabAction.GetState(handTypeRight) && currentArrow != null)
         {
-            isPulling = true;
+            if (Vector3.Distance(poseRight.transform.position, arrowHoldPoint.position) < 0.8f)
+            {
+                isPulling = true;
+            }
 
-            float pullDistance = Vector3.Distance(poseLeft.transform.position, poseRight.transform.position);
-            pullDistance = Mathf.Clamp(pullDistance, 0f, maxPullDistance);
-            currentArrow.transform.localPosition = new Vector3(0f, 0f, -pullDistance);
+            if (isPulling)
+            {
+                pullDistance = Vector3.Distance(poseLeft.transform.position, poseRight.transform.position);
+                pullDistance = Mathf.Clamp(pullDistance, 0f, maxPullDistance);
+                Debug.Log("Pull Distance: " + pullDistance);
+                currentArrow.transform.localPosition = new Vector3(0f, 0f, -pullDistance); // Kéo mũi tên về sau
+            }
         }
         else if (grabAction.GetStateUp(handTypeRight) && isPulling)
         {
@@ -73,11 +81,16 @@ public class BowControllerVR : MonoBehaviour
         {
             rb.isKinematic = false;
 
-            float pullDistance = Vector3.Distance(poseLeft.transform.position, poseRight.transform.position);
-            pullDistance = Mathf.Clamp(pullDistance, 0f, maxPullDistance);
-            float force = Mathf.Lerp(minShootForce, shootForce, pullDistance / maxPullDistance);
+            // pullDistance = Vector3.Distance(poseLeft.transform.position, poseRight.transform.position);
+            // pullDistance = Mathf.Clamp(pullDistance, 0f, maxPullDistance);
+            float force = minShootForce + ((pullDistance - 0.15f) / (maxPullDistance - 0.15f)) * (shootForce - minShootForce);
+
+            Debug.Log("Force applied to arrow: " + force);
 
             rb.AddForce(arrowHoldPoint.forward * force, ForceMode.Impulse);
+
+            Vector3 windForce = WindZoneManager.Instance.GetWindForce();
+            rb.AddForce(windForce, ForceMode.Impulse);
         }
 
         currentArrow = null;

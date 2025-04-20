@@ -101,6 +101,9 @@ public class BowController : MonoBehaviour
             currentShootForce = Mathf.Max(currentShootForce, minShootForce);
 
             rb.AddForce(arrowHoldPoint.forward * currentShootForce, ForceMode.Impulse);
+
+            Vector3 windForce = WindZoneManager.Instance.GetWindForce();
+            rb.AddForce(windForce, ForceMode.Impulse);
         }
 
         currentArrow = null;
