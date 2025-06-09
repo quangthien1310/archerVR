@@ -6,8 +6,44 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/MainMenu.unity
+    guid: ca14387bab81a7345870562d827f7b45
+  - enabled: 1
+    path: Assets/Scenes/TaskList/Gameplay 1.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/TaskList/Gameplay 2.unity
+    guid: 7e33d807eb5d713468f31236ef1f3427
+  - enabled: 1
+    path: Assets/Scenes/TaskList/Gameplay 3.unity
+    guid: a926910185add844fa8f375def568db7
+  - enabled: 1
+    path: Assets/Scenes/TaskList/Gameplay 4.unity
+    guid: 731f647b3646b1e429df75feddb8e95c
+  - enabled: 1
+    path: Assets/Scenes/TaskList/Gameplay 5.unity
+    guid: 816350a8c2a9b1644b77d239aec086d3
+  - enabled: 1
+    path: Assets/Scenes/TaskList/Gameplay 6.unity
+    guid: d52287319f5f06645b2052258878352b
+  - enabled: 1
+    path: Assets/Scenes/TaskList/Gameplay 7.unity
+    guid: 8afb3f61476c6024aa8647447ca8d16e
+  - enabled: 1
+    path: Assets/Scenes/TaskList/Gameplay 8.unity
+    guid: cc0f40240a950434298727ca64d0c514
+  - enabled: 1
+    path: Assets/Scenes/TaskList/Gameplay 9.unity
+    guid: f23de6e3ea1da0044b5e1dcb7c18c50a
+  - enabled: 1
+    path: Assets/Scenes/TaskList/Gameplay 10.unity
+    guid: b71a75eba2e78474f82b86c9ccb50a46
+  - enabled: 1
+    path: Assets/Scenes/TaskList/Gameplay 11.unity
+    guid: 21bab2e799043074a9530c1e8eaa332e
+  - enabled: 1
+    path: Assets/Scenes/TaskList/Gameplay 12.unity
+    guid: d49b4285f51413c4da0f5405d471c7c7
   m_configObjects:
     Unity.XR.OpenVR.Settings: {fileID: 11400000, guid: 05f28c0351f90f14ead91a61174827b3,
       type: 2}

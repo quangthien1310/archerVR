@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afc0eff4e877dce47af04e6f004c4a08, type: 3}
+  m_Name: Gameplay 9
+  m_EditorClassIdentifier: 
+  taskName: Gameplay 9
+  level: 9
+  levelName: 9
+  timeLimit: 90
+  scorePerHit: 10
+  passScore: 200
+  passAccuracy: 70
+  isLocked: 1
+  highScore: 0

@@ -17,6 +17,8 @@ public class BowControllerVR : MonoBehaviour
     public Vector3 rotationOffset = new Vector3(-90f, 0f, 0f);
 
     private GameObject currentArrow;
+    private GameObject arrowTail;
+    private AudioSource arrowAudioSource;
     private bool isPulling = false;
 
     // SteamVR input actions
@@ -26,18 +28,30 @@ public class BowControllerVR : MonoBehaviour
 
     [SerializeField] private SteamVR_Behaviour_Pose poseLeft;
     [SerializeField] private SteamVR_Behaviour_Pose poseRight;
+
+    [Header("Haptics")]
+    public SteamVR_Action_Vibration hapticAction;
+
+    [Header("Haptics Pull Settings")]
+    public float hapticDuration = 0.01f;  // thời gian rung mỗi frame
+    public float hapticFrequency = 50f;   // tần số rung
+    public float maxHapticAmplitude = 0.9f; // rung mạnh nhất khi kéo tối đa
+
+
+
     private float pullDistance = 0f;
 
     void Start()
     {
-        SpawnArrow();
+        StartCoroutine(SpawnArrowDelayed(0.5f));
     }
 
     void Update()
     {
-        if (grabAction.GetState(handTypeRight) && currentArrow != null)
+        if (GameplayManager.Instance.isGameRunning == false) return;
+        if (grabAction.GetState(handTypeRight) && currentArrow != null && arrowTail != null)
         {
-            if (Vector3.Distance(poseRight.transform.position, arrowHoldPoint.position) < 0.8f)
+            if (Vector3.Distance(poseRight.transform.position, arrowTail.transform.position) < 0.1f)
             {
                 isPulling = true;
             }
@@ -46,15 +60,20 @@ public class BowControllerVR : MonoBehaviour
             {
                 pullDistance = Vector3.Distance(poseLeft.transform.position, poseRight.transform.position);
                 pullDistance = Mathf.Clamp(pullDistance, 0f, maxPullDistance);
-                Debug.Log("Pull Distance: " + pullDistance);
-                currentArrow.transform.localPosition = new Vector3(0f, 0f, -pullDistance); // Kéo mũi tên về sau
+                currentArrow.transform.localPosition = new Vector3(0f, 0f, -pullDistance + 0.15f); // Kéo mũi tên về sau
+
+                // Rung theo lực kéo
+                float normalizedPull = pullDistance / maxPullDistance;  // từ 0 → 1
+                float amplitude = Mathf.Lerp(0f, maxHapticAmplitude, normalizedPull);
+
+                hapticAction.Execute(0f, hapticDuration, hapticFrequency, amplitude, handTypeLeft);
             }
         }
         else if (grabAction.GetStateUp(handTypeRight) && isPulling)
         {
             FireCurrentArrow();
-            StartCoroutine(SpawnArrowDelayed(1f));
             isPulling = false;
+            StartCoroutine(SpawnArrowDelayed(0.5f));
         }
     }
 
@@ -62,6 +81,9 @@ public class BowControllerVR : MonoBehaviour
     {
         Quaternion arrowRotation = Quaternion.LookRotation(arrowHoldPoint.forward) * Quaternion.Euler(rotationOffset);
         currentArrow = Instantiate(arrowPrefab, arrowHoldPoint.position, arrowRotation, arrowHoldPoint);
+
+        arrowTail = currentArrow.transform.Find("ArrowTail").gameObject;
+        arrowAudioSource = arrowTail.GetComponent<AudioSource>();
 
         Rigidbody rb = currentArrow.GetComponent<Rigidbody>();
         if (rb != null)
@@ -79,19 +101,25 @@ public class BowControllerVR : MonoBehaviour
         Rigidbody rb = currentArrow.GetComponent<Rigidbody>();
         if (rb != null)
         {
+            if (arrowAudioSource != null)
+            {
+                arrowAudioSource.Play();
+                Debug.Log("Arrow audio played");
+            }
+
             rb.isKinematic = false;
 
-            // pullDistance = Vector3.Distance(poseLeft.transform.position, poseRight.transform.position);
-            // pullDistance = Mathf.Clamp(pullDistance, 0f, maxPullDistance);
-            float force = minShootForce + ((pullDistance - 0.15f) / (maxPullDistance - 0.15f)) * (shootForce - minShootForce);
-
-            Debug.Log("Force applied to arrow: " + force);
+            float force = minShootForce +  (shootForce - minShootForce) * ((pullDistance - 0.15f) / (maxPullDistance - 0.15f));
 
             rb.AddForce(arrowHoldPoint.forward * force, ForceMode.Impulse);
 
             Vector3 windForce = WindZoneManager.Instance.GetWindForce();
             rb.AddForce(windForce, ForceMode.Impulse);
+
+            hapticAction.Execute(0f, 0.01f, 75f, 1f, handTypeRight);
         }
+
+        GameplayManager.Instance.RegisterShot();
 
         currentArrow = null;
     }

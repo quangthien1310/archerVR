@@ -106,6 +106,8 @@ public class BowController : MonoBehaviour
             rb.AddForce(windForce, ForceMode.Impulse);
         }
 
+        GameplayManager.Instance.RegisterShot(); // Ghi nhận số lần bắn
+
         currentArrow = null;
     }
 
